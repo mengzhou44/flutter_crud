@@ -15,6 +15,7 @@ class TasksRepository {
                 query {
                       tasks(userId: $userId) {
                         id,
+                        userId,
                         completed,
                         description
                       }
