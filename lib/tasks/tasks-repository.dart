@@ -1,27 +1,43 @@
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import './tasks-model.dart';
 
-HttpLink httpLink = HttpLink(uri: "http://localhost:3000/graphql");
-
-GraphQLClient client = GraphQLClient(
-    link: httpLink,
-    cache: OptimisticCache(
-      dataIdFromObject: typenameDataIdFromObject,
-    ));
+import '../utils/constants.dart';
 
 class TasksRepository {
-  Future<TasksModel> getTasks(int userId) async {
-    final QueryResult data = await client.query(QueryOptions(document: '''
-                query {
-                      tasks(userId: $userId) {
-                        id,
-                        userId,
-                        completed,
-                        description
-                      }
-                    }
-                '''));
+  Future<List<Task>> getAllTasks() async {
+   
+    try {
+      var response = await http.get("${Constants.baseUrl}/all-tasks");
+      var items = json.decode(response.body);
+
+      List<Task> result = new List<Task>();
+      for (var i = 0; i < items.length; i++) {
+        print(items[i]);
+        result.add(Task.fromJson(items[i]));
+      }
+
+      print(result);
+      return result;
+    } catch (Exception) {
+      throw Exception('Failed to get tasks!');
+    }  
+  }
+
+  Future<void> addTask(Task task) async {
+     String json = '{ "userId": ${task.userId}, "description": "${task.description}", "completed": ${task.completed}}';
+       Map<String, String> headers = {"Content-type": "application/json"};
+     try {
+       await http.post("${Constants.baseUrl}/tasks",
+           headers: headers,
+          body:  json
+       );
  
-     return TasksModel.fromJson(data.data['tasks'].cast<Map<String, dynamic>>());
+    } catch (exception) {
+      print(exception);
+      throw Exception('Failed to  add task');
+    }  
+
   }
 }

@@ -3,14 +3,24 @@ import 'tasks-model.dart';
 import 'tasks-repository.dart';
 
 class TasksBloc {
-  
-  final _subject = PublishSubject<TasksModel>();
+  List<Task> tasks = List<Task>();
+  BehaviorSubject<List<Task>> _subject;
 
-  Observable<TasksModel> get allTasks => _subject.stream;
+  TasksBloc() {
+    _subject = new BehaviorSubject<List<Task>>.seeded(this.tasks);
+  }
 
-  getTasks() async {
-    TasksModel tasks = await TasksRepository().getTasks(1);
+  final _repository = TasksRepository();
+
+  Observable<List<Task>> get allTasks => _subject.stream;
+
+  getAllTasks() async {
+    this.tasks = await _repository.getAllTasks();
     _subject.sink.add(tasks);
+  }
+
+  addTask(Task task) async {
+    await _repository.addTask(task);
   }
 
   dispose() {
@@ -19,5 +29,3 @@ class TasksBloc {
 }
 
 final bloc = TasksBloc();
-
-
