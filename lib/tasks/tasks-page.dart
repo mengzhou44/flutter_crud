@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'tasks-bloc.dart';
 import 'tasks-model.dart';
 import '../widgets/button.dart';
+import 'tasks-form.dart';
 
 class TasksPage extends StatelessWidget {
   @override
@@ -21,11 +22,11 @@ class TasksPage extends StatelessWidget {
               child: Button(
                 buttonText: 'Add',
                 onPressed: () async {
-                  await bloc.addTask(new Task(
-                      completed: false,
-                      description: 'go to church',
-                      userId: 1));
-                  await bloc.getAllTasks();
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        TasksForm(task: new Task()),
+                  );
                 },
               ),
             )
@@ -52,9 +53,29 @@ class TasksPage extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       child: Center(
-                        child: Text(
-                            "${task.id},  ${task.userId}, ${task.completed},${task.description}",
-                            style: TextStyle(fontSize: 18)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                             Expanded(
+                               flex: 3,
+                               child: Text(
+                                  "${task.userId}, ${task.completed},${task.description}",
+                                  
+                                  style: TextStyle(fontSize: 18)),
+                             ),
+                             Expanded(
+                               flex: 1,
+                               child: FlatButton(
+                                      child: Text('Change'), onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  TasksForm(task: task),
+                                            );
+                                      }),
+                             )
+                          ],
+                        ),
                       ),
                       color: Colors.teal[100]);
                 });

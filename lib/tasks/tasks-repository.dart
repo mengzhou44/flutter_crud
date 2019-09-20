@@ -17,8 +17,6 @@ class TasksRepository {
         print(items[i]);
         result.add(Task.fromJson(items[i]));
       }
-
-      print(result);
       return result;
     } catch (Exception) {
       throw Exception('Failed to get tasks!');
@@ -28,16 +26,20 @@ class TasksRepository {
   Future<void> addTask(Task task) async {
      String json = '{ "userId": ${task.userId}, "description": "${task.description}", "completed": ${task.completed}}';
        Map<String, String> headers = {"Content-type": "application/json"};
-     try {
+   
        await http.post("${Constants.baseUrl}/tasks",
            headers: headers,
           body:  json
        );
- 
-    } catch (exception) {
-      print(exception);
-      throw Exception('Failed to  add task');
-    }  
+  }
 
+  Future<void>  updateTask(Task task) async {
+      String json = '{ "id": ${task.id}, "userId": ${task.userId}, "description": "${task.description}", "completed": ${task.completed}}';
+       Map<String, String> headers = {"Content-type": "application/json"};
+      
+       await http.put("${Constants.baseUrl}/tasks",
+           headers: headers,
+          body:  json
+       );
   }
 }

@@ -16,11 +16,26 @@ class TasksBloc {
 
   getAllTasks() async {
     this.tasks = await _repository.getAllTasks();
+    print('getAllTasks');
+    print(this.tasks.length);
     _subject.sink.add(tasks);
   }
 
   addTask(Task task) async {
-    await _repository.addTask(task);
+    try{
+       await _repository.addTask(task);
+    } catch (exception) {
+      throw Exception('Failed to  add task');
+    }  
+  }
+
+  updateTask(Task task) async {
+     try{
+       await _repository.updateTask(task);
+    } catch (exception) {
+      throw Exception('Failed to save task');
+    }  
+  
   }
 
   dispose() {
