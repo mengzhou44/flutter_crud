@@ -7,9 +7,8 @@ class Task {
   Task({this.userId,  this.completed, this.description});
 
   Task.newTask() {
-      id=0;
       description ='';
-      completed = true;
+      //completed = false;
       userId =0;
   }
 

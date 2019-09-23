@@ -37,23 +37,19 @@ class TasksFormState extends State<TasksForm> {
   }
 
   getUserId() {
-    if (task.userId == null) {
+    if (task.userId == 0) {
       return "";
     }
     return task.userId.toString();
   }
 
   saveTask() async {
-    try {
-      if (task.id == null) {
-        await bloc.addTask(task);
-      } else {
-        await bloc.updateTask(task);
-      }
+    if (task.id == null) {
+      await bloc.addTask(task);
       await bloc.getAllTasks();
-    } catch (exception) {
-    
-      print(exception);
+    } else {
+      await bloc.updateTask(task);
+      await bloc.getAllTasks();
     }
   }
 

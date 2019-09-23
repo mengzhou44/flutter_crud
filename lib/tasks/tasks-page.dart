@@ -25,7 +25,7 @@ class TasksPage extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) =>
-                        TasksForm(task: new Task()),
+                        TasksForm(task: Task.newTask()),
                   );
                 },
               ),
@@ -45,7 +45,7 @@ class TasksPage extends StatelessWidget {
                 gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
                   mainAxisSpacing: 0,
-                  childAspectRatio: 4,
+                  childAspectRatio: 3,
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   Task task = snapshot.data[index];
@@ -56,24 +56,34 @@ class TasksPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                             Expanded(
-                               flex: 3,
-                               child: Text(
+                            Expanded(
+                              flex: 3,
+                              child: Text(
                                   "${task.userId}, ${task.completed},${task.description}",
-                                  
                                   style: TextStyle(fontSize: 18)),
-                             ),
-                             Expanded(
-                               flex: 1,
-                               child: FlatButton(
-                                      child: Text('Change'), onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  TasksForm(task: task),
-                                            );
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                children: <Widget>[
+                                  FlatButton(
+                                      child: Text('Change'),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              TasksForm(task: task),
+                                        );
                                       }),
-                             )
+                                  FlatButton(
+                                      child: Text('Delete'),
+                                      onPressed: () async {
+                                        await  bloc.deleteTask(task.id);
+                                        await  bloc.getAllTasks();
+                                      }),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
