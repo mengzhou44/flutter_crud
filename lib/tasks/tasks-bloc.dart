@@ -16,22 +16,23 @@ class TasksBloc {
 
   getAllTasks() async {
     this.tasks = await _repository.getAllTasks();
-    _subject.sink.add(tasks);
+    _subject.sink.add(this.tasks);
   }
 
   addTask(Task task) async {
-     await _repository.addTask(task); 
+     
+      await _repository.addTask(task);
+      await getAllTasks();
+    
   }
 
   updateTask(Task task) async {
     await _repository.updateTask(task);
   }
 
-
-   deleteTask(int id) async {
-       await _repository.deleteTask(id);
+  deleteTask(int id) async {
+    await _repository.deleteTask(id);
   }
-
 
   dispose() {
     _subject.close();

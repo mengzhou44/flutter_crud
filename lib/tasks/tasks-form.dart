@@ -25,8 +25,10 @@ class TasksFormState extends State<TasksForm> {
     }
   }
 
+ 
   @override
   Widget build(BuildContext context) {
+    
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Constants.padding),
@@ -43,14 +45,19 @@ class TasksFormState extends State<TasksForm> {
     return task.userId.toString();
   }
 
-  saveTask() async {
-    if (task.id == null) {
-      await bloc.addTask(task);
-      await bloc.getAllTasks();
-    } else {
-      await bloc.updateTask(task);
-      await bloc.getAllTasks();
+  saveTask(BuildContext context) async {
+    try{
+      if (task.id == null) {
+            await bloc.addTask(task);
+          } else {
+            await bloc.updateTask(task);
+            await bloc.getAllTasks();
+          }
+    }catch(e) {
+         Scaffold.of(context).showSnackBar(SnackBar(
+           content: Text("Error occured when saving tasks.")));
     }
+   
   }
 
   content(BuildContext context) {
@@ -120,7 +127,7 @@ class TasksFormState extends State<TasksForm> {
               children: <Widget>[
                 FlatButton(
                   onPressed: () async {
-                    await saveTask();
+                    await saveTask(context);
                     Navigator.of(context).pop();
                   },
                   child: Text(saveButtonText),

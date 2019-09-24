@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'tasks-bloc.dart';
 import 'tasks-model.dart';
 import '../widgets/button.dart';
+import '../widgets/confirm.dart';
 import 'tasks-form.dart';
 
 class TasksPage extends StatelessWidget {
@@ -50,40 +51,52 @@ class TasksPage extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   Task task = snapshot.data[index];
                   return Dismissible(
-                      background: stackBehindDismiss(),
-                      key: ObjectKey(task),
-                      child: Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.all(8),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(
-                                      "${task.userId}, ${task.completed},${task.description}",
-                                      style: TextStyle(fontSize: 18)),
-                                ),
-                                Expanded(
-                                    flex: 1,
-                                    child: FlatButton(
-                                        child: Text('Change'),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                TasksForm(task: task),
-                                          );
-                                        }))
-                              ],
-                            ),
+                    background: stackBehindDismiss(),
+                    key: ObjectKey(task),
+                    child: Container(
+                        padding: const EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(8),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                    "${task.userId}, ${task.completed},${task.description}",
+                                    style: TextStyle(fontSize: 18)),
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: FlatButton(
+                                      child: Text('Change'),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              TasksForm(task: task),
+                                        );
+                                      }))
+                            ],
                           ),
-                          color: Colors.teal[100]),
-                      onDismissed: (direction) async {
-                        await bloc.deleteTask(task.id);
-                        await bloc.getAllTasks();
-                      });
+                        ),
+                        color: Colors.teal[100]),
+                    onDismissed: (direction) async {
+                      await bloc.deleteTask(task.id);
+                      await bloc.getAllTasks();
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text("Task ${task.id}  is deleted.")));
+                    },
+                    confirmDismiss: (DismissDirection direction) async {
+                      return await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Confirm(
+                                confirmText:
+                                    "Are you sure you want to delete this task?");
+                          });
+                    },
+                  );
                 });
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
@@ -102,7 +115,7 @@ Widget stackBehindDismiss() {
     color: Colors.teal[100],
     child: Icon(
       Icons.delete,
-      color: Colors.white,
+      color: Colors.red,
     ),
   );
 }
