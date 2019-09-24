@@ -49,45 +49,41 @@ class TasksPage extends StatelessWidget {
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   Task task = snapshot.data[index];
-                  return Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.all(8),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                  "${task.userId}, ${task.completed},${task.description}",
-                                  style: TextStyle(fontSize: 18)),
+                  return Dismissible(
+                      background: stackBehindDismiss(),
+                      key: ObjectKey(task),
+                      child: Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(8),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                      "${task.userId}, ${task.completed},${task.description}",
+                                      style: TextStyle(fontSize: 18)),
+                                ),
+                                Expanded(
+                                    flex: 1,
+                                    child: FlatButton(
+                                        child: Text('Change'),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                TasksForm(task: task),
+                                          );
+                                        }))
+                              ],
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Column(
-                                children: <Widget>[
-                                  FlatButton(
-                                      child: Text('Change'),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              TasksForm(task: task),
-                                        );
-                                      }),
-                                  FlatButton(
-                                      child: Text('Delete'),
-                                      onPressed: () async {
-                                        await  bloc.deleteTask(task.id);
-                                        await  bloc.getAllTasks();
-                                      }),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      color: Colors.teal[100]);
+                          ),
+                          color: Colors.teal[100]),
+                      onDismissed: (direction) async {
+                        await bloc.deleteTask(task.id);
+                        await bloc.getAllTasks();
+                      });
                 });
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
@@ -97,4 +93,16 @@ class TasksPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget stackBehindDismiss() {
+  return Container(
+    alignment: Alignment.centerRight,
+    padding: EdgeInsets.only(right: 20.0),
+    color: Colors.teal[100],
+    child: Icon(
+      Icons.delete,
+      color: Colors.white,
+    ),
+  );
 }

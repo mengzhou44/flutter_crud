@@ -120,7 +120,7 @@ class TasksFormState extends State<TasksForm> {
               children: <Widget>[
                 FlatButton(
                   onPressed: () async {
-                    saveTask();
+                    await saveTask();
                     Navigator.of(context).pop();
                   },
                   child: Text(saveButtonText),
