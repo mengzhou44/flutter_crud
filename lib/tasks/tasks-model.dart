@@ -8,7 +8,7 @@ class Task {
 
   Task.newTask() {
     description = '';
-    //  completed = false;
+    completed = false;
     userId = 0;
   }
 

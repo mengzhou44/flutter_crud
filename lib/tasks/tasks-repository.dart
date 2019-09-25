@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import './tasks-model.dart';
 
 import '../utils/constants.dart';
+import '../utils/api-helper.dart';
 
 class TasksRepository {
   Future<List<Task>> getAllTasks() async {
@@ -26,9 +27,7 @@ class TasksRepository {
 
     http.Response res = await http.post("${Constants.baseUrl}/tasks",
         headers: headers, body: json);
-    if (res.statusCode != 200) {
-        throw Exception('Error occured');
-    }
+    throwError(res);
   }
 
   Future<void> updateTask(Task task) async {
@@ -36,11 +35,13 @@ class TasksRepository {
         '{ "id": ${task.id}, "userId": ${task.userId}, "description": "${task.description}", "completed": ${task.completed}}';
     Map<String, String> headers = {"Content-type": "application/json"};
 
-    await http.put("${Constants.baseUrl}/tasks", headers: headers, body: json);
+    http.Response res = await http.put("${Constants.baseUrl}/tasks", headers: headers, body: json);
+    throwError(res);
   }
 
   Future<void> deleteTask(int id) async {
     Map<String, String> headers = {"Content-type": "application/json"};
-    await http.delete("${Constants.baseUrl}/tasks/$id", headers: headers);
+     http.Response res =await http.delete("${Constants.baseUrl}/tasks/$id", headers: headers);
+     throwError(res);
   }
 }

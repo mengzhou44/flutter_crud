@@ -20,10 +20,8 @@ class TasksBloc {
   }
 
   addTask(Task task) async {
-     
       await _repository.addTask(task);
       await getAllTasks();
-    
   }
 
   updateTask(Task task) async {

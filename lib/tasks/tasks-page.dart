@@ -38,6 +38,22 @@ class TasksPage extends StatelessWidget {
         ));
   }
 
+  deleteTask(BuildContext context, TasksBloc bloc, Task task) async {
+    try{
+      await bloc.deleteTask(task.id);
+      Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text("Task ${task.id}  is deleted.")));
+    }catch(err) {
+     
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("Task ${task.id}  can NOT be deleted.")));
+    } finally  {
+         await bloc.getAllTasks();
+    }
+
+  }
+ 
+
   Widget showTasks(TasksBloc bloc) {
     return Flexible(
       child: StreamBuilder(
@@ -85,10 +101,7 @@ class TasksPage extends StatelessWidget {
                         ),
                         color: Colors.teal[100]),
                     onDismissed: (direction) async {
-                      await bloc.deleteTask(task.id);
-                      await bloc.getAllTasks();
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Task ${task.id}  is deleted.")));
+                       deleteTask(context, bloc,task);
                     },
                     confirmDismiss: (DismissDirection direction) async {
                       return await showDialog(

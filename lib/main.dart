@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './tasks/tasks-page.dart';
 
 void main() {
-  runApp(MaterialApp(title: "Graphql CRUD", home: MyApp()));
+  runApp(MaterialApp(title: "CRUD", home: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

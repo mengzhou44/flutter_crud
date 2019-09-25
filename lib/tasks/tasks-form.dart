@@ -4,7 +4,6 @@ import 'tasks-bloc.dart';
 import '../utils/constants.dart';
 
 class TasksForm extends StatefulWidget {
-
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Task task;
 
@@ -15,11 +14,12 @@ class TasksForm extends StatefulWidget {
 }
 
 class TasksFormState extends State<TasksForm> {
-  Task task = new Task(completed: false, description: "", userId: 0);
   String formTitle;
   String saveButtonText;
+  Task task;
   TasksFormState({this.task}) {
-    if (this.task.id == null) {
+   
+    if (task.id == null) {
       formTitle = 'Add Task';
       saveButtonText = 'Add';
     } else {
@@ -28,14 +28,11 @@ class TasksFormState extends State<TasksForm> {
     }
   }
 
- 
   @override
   Widget build(BuildContext context) {
-    
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(Constants.padding)
-      ),
+          borderRadius: BorderRadius.circular(Constants.padding)),
       elevation: 0.0,
       child: content(context),
     );
@@ -45,28 +42,26 @@ class TasksFormState extends State<TasksForm> {
     if (task.userId == 0) {
       return "";
     }
-    return task.userId.toString();
+    return widget.task.userId.toString();
   }
 
   saveTask() async {
-    try{
+    try {
       if (task.id == null) {
-            await bloc.addTask(task);
-          } else {
-            await bloc.updateTask(task);
-            await bloc.getAllTasks();
-          }
-    }catch(e) {
-          widget.scaffoldKey.currentState.showSnackBar(
-            SnackBar(
-                content: Text("Error occured when saving tasks.", textAlign: TextAlign.center, style: TextStyle(color:)),
-                backgroundColor: Colors.teal[100],
-                shape:  RoundedRectangleBorder(
-                       borderRadius: BorderRadius.circular(8.0)))
-
-           );
+        await bloc.addTask(task);
+      } else {
+        await bloc.updateTask(task);
+        await bloc.getAllTasks();
+      }
+    } catch (e) {
+      widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text("Error occured when saving tasks.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black)),
+          backgroundColor: Colors.teal[100],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0))));
     }
-   
   }
 
   content(BuildContext context) {

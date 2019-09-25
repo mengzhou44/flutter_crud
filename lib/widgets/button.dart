@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
 class Button extends StatelessWidget {
   final String buttonText;
@@ -8,6 +9,8 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constants.buttonRadius)),
       padding: const EdgeInsets.all(8.0),
       textColor: Colors.black,
       color: Colors.teal[100],
