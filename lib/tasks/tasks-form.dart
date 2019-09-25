@@ -4,8 +4,11 @@ import 'tasks-bloc.dart';
 import '../utils/constants.dart';
 
 class TasksForm extends StatefulWidget {
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final Task task;
-  TasksForm({Key key, this.task}) : super(key: key);
+
+  TasksForm({Key key, this.task, this.scaffoldKey}) : super(key: key);
 
   @override
   TasksFormState createState() => new TasksFormState(task: this.task);
@@ -31,7 +34,7 @@ class TasksFormState extends State<TasksForm> {
     
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(Constants.padding),
+        borderRadius: BorderRadius.circular(Constants.padding)
       ),
       elevation: 0.0,
       child: content(context),
@@ -45,7 +48,7 @@ class TasksFormState extends State<TasksForm> {
     return task.userId.toString();
   }
 
-  saveTask(BuildContext context) async {
+  saveTask() async {
     try{
       if (task.id == null) {
             await bloc.addTask(task);
@@ -54,8 +57,14 @@ class TasksFormState extends State<TasksForm> {
             await bloc.getAllTasks();
           }
     }catch(e) {
-         Scaffold.of(context).showSnackBar(SnackBar(
-           content: Text("Error occured when saving tasks.")));
+          widget.scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+                content: Text("Error occured when saving tasks.", textAlign: TextAlign.center, style: TextStyle(color:)),
+                backgroundColor: Colors.teal[100],
+                shape:  RoundedRectangleBorder(
+                       borderRadius: BorderRadius.circular(8.0)))
+
+           );
     }
    
   }
@@ -127,7 +136,7 @@ class TasksFormState extends State<TasksForm> {
               children: <Widget>[
                 FlatButton(
                   onPressed: () async {
-                    await saveTask(context);
+                    await saveTask();
                     Navigator.of(context).pop();
                   },
                   child: Text(saveButtonText),

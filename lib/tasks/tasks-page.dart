@@ -6,12 +6,15 @@ import '../widgets/confirm.dart';
 import 'tasks-form.dart';
 
 class TasksPage extends StatelessWidget {
+
+  final GlobalKey  _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     bloc.getAllTasks();
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Restful Client"),
+          title: Text("Tasks to do"),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -26,7 +29,7 @@ class TasksPage extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) =>
-                        TasksForm(task: Task.newTask()),
+                        TasksForm(task: Task.newTask(), scaffoldKey: _scaffoldKey),
                   );
                 },
               ),
